@@ -1,0 +1,6 @@
+loading_split_homepage:
+    path:     /
+    defaults: { _controller: LoadingSplitBundle:Default:index }
+split_homepage:
+    path:     /table
+    defaults: { _controller: LoadingSplitBundle:Table:index }

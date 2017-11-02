@@ -1,0 +1,4 @@
+services:
+#    loading_split.example:
+#        class: LoadingSplitBundle\Example
+#        arguments: ["@service_id", "plain_value", "%parameter%"]

@@ -1,1 +1,56 @@
-Repartition du loading par CP
+
+{% extends "::layout.html.twig" %}
+
+{% block body %}
+    <link rel="stylesheet" href="{{ asset('css/LoadingSplit.css') }}" />
+    <h3>Repartition des chargements par CP </h3>
+	<table class="LoadingSplit">
+						<thead>
+							<tr>
+								<th>Pays</th>
+								<th>MADHUB</th>
+								<th>Qté Commandée</th>
+								<th>CP00017</th>
+								<th>CP00050</th>
+								<th>Reste à affecter</th>  
+		 
+							</tr>
+						</thead>
+						 
+						<tbody>
+						 							 
+								<tr>
+									<td>France VPM</td>
+									<td>33</td>
+									<td>77520</td>
+									<td>77400</td>
+									<td></td>
+									<td>120</td>
+	 
+								</tr>
+								<tr>
+									<td>LogLine VPM</td>
+									<td>33</td>
+									<td>77520</td>
+									<td>77400</td>
+									<td></td>
+									<td>120</td>
+	 
+								</tr>
+								<tr>
+									<td>Roumanie</td>
+									<td>33</td>
+									<td>77520</td>
+									<td>77400</td>
+									<td></td>
+									<td>120</td>
+	 
+								</tr>
+								 
+						</tbody>
+	</table> 
+
+{% endblock %}
+
+
+

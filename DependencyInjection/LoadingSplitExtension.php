@@ -2,6 +2,7 @@
 
 namespace LoadingSplitBundle\DependencyInjection;
 
+use Symfony\Bundle\TwigBundle\DependencyInjection\Configuration;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;

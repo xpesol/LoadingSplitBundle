@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Loading
  *
- * @ORM\Table(name="loading")
+ * @ORM\Table(name="cp_loading")
  * @ORM\Entity(repositoryClass="LoadingSplitBundle\Repository\LoadingRepository")
  */
 class Loading

@@ -5,6 +5,8 @@
     <link rel="stylesheet" href="{{ asset('css/LoadingSplit.css') }}" />
     <h3>Repartition des chargements par CP </h3>
 	<table class="LoadingSplit">
+	                   
+                        <!--
 						<thead>
 							<tr>
 								<th>Pays</th>
@@ -47,6 +49,23 @@
 	 
 								</tr>
 								 
+						</tbody>-->
+						                        
+						<thead>
+							<tr>
+								<th>CP</th>
+								<th>IdLoading</th>
+							</tr>
+						</thead>
+						 
+						<tbody>
+						 		 {% for loading in listLoading %}
+								 <tr> 
+                                 <td>{{ loading.ref }}</td>
+								 <td>{{ loading.idloading }}</td>
+								 </tr>
+                                {% endfor %}					 
+										 
 						</tbody>
 	</table> 
 

@@ -2,6 +2,8 @@
 
 namespace LoadingSplitBundle\Repository;
 
+use Doctrine\ORM\EntityRepository;
+
 /**
  * LoadingRepository
  *
@@ -10,4 +12,26 @@ namespace LoadingSplitBundle\Repository;
  */
 class LoadingRepository extends \Doctrine\ORM\EntityRepository
 {
+	  public function myFindAll()
+	  {
+		// Méthode 1 : en passant par l'EntityManager
+		$queryBuilder = $this->_em->createQueryBuilder()
+		  ->select('l')
+		  ->from($this->_entityName, 'l')
+		;
+
+		$queryBuilder = $this->createQueryBuilder('l');
+
+		// On n'ajoute pas de critère ou tri particulier, la construction
+		// de notre requête est finie
+
+		// On récupère la Query à partir du QueryBuilder
+		$query = $queryBuilder->getQuery();
+
+		// On récupère les résultats à partir de la Query
+		$results = $query->getResult();
+
+		// On retourne ces résultats
+		return $results;
+	  }
 }

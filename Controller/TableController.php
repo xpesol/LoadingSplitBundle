@@ -18,7 +18,7 @@ class TableController extends Controller
         return $this->render('LoadingSplitBundle:Table:index.html.twig', array ('listLoading' =>$listLoading));
     }
 	
-	    public function selectAction($po)
+	public function selectAction($po)
     {
 		$em = $this->getDoctrine()->getManager();	
 		$repositorysku = $em->getRepository('LoadingSplitBundle:Loadingsplitsku');

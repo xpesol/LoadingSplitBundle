@@ -12,6 +12,14 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Loadingposkudetailfnd
 {
+	
+	
+	/**
+	*@ORM\OneToOne(targetEntity="LoadingSplitBundle\Entity\Loadingsplitsku")
+	*@ORM\JoinColumn(name="idloading_po_sku", referencedColumnName="idloading_po_sku")
+	*/
+	private $loadingsku;
+	
     /**
      * @var int
      *

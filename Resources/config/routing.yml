@@ -4,3 +4,6 @@ loading_split_homepage:
 split_homepage:
     path:     /table
     defaults: { _controller: LoadingSplitBundle:Table:index }
+split_select:
+    path:     /table/{po}
+    defaults: { _controller: LoadingSplitBundle:Table:select }

@@ -1,0 +1,30 @@
+
+{% extends "::layout.html.twig" %}
+
+{% block body %}
+    <link rel="stylesheet" href="{{ asset('css/LoadingSplit.css') }}" />
+    <h3>Repartition des chargements par CP </h3>
+	<table class="LoadingSplit">
+	                   					                        
+						<thead>
+							<tr>
+								<th>PO</th>
+								<th>IdLoading</th>
+								{% for loadingsplitsku in listCp %}
+                                <th>{{loadingsplitsku}}</th>
+								{% endfor %}
+							</tr>
+						</thead>
+						 
+						<tbody>
+	
+	                    <td></td>
+						<td></td>
+						<td></td>
+						</tbody>
+	</table> 
+
+{% endblock %}
+
+
+

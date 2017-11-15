@@ -39,6 +39,6 @@ class TableController extends Controller
 			throw new NotFoundHttpException ( " Pas de repartition trouvée pour la commande ".$po);
 		}
 
-        return $this->render('LoadingSplitBundle:Table:select.html.twig', array ('listCp' =>$listCpLodading));	
+        return $this->render('LoadingSplitBundle:Table:select.html.twig', array ('listCp' =>$listCpLodading, 'po' => $po));	
     }
 }

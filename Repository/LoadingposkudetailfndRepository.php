@@ -10,4 +10,45 @@ namespace LoadingSplitBundle\Repository;
  */
 class LoadingposkudetailfndRepository extends \Doctrine\ORM\EntityRepository
 {
+	public function findEntrepotByIdLoadingPoSku($idLoadingPoSku)
+		{
+		  $qb = $this->createQueryBuilder('a');
+
+		  $qb->where('a.idloadingposku = :idLoadingPoSku')
+			   ->setParameter('idLoadingPoSku', $idLoadingPoSku)
+			 ->orderBy('a.entrepot', 'DESC')
+		  ;
+
+		  return $qb
+			->getQuery()
+			->getResult()
+		  ;
+		}
+		
+		public function oldfindQuantitesByCpEntrepotIdLoadingPoSku($entrepot, $idLoadingPoSku)
+		{
+		  $qb = $this->createQueryBuilder('a');
+
+		  $qb->where('a.idloadingposku = :idLoadingPoSku')
+			   ->setParameter('idLoadingPoSku', $idLoadingPoSku)
+			   ->andWhere('a.entrepot= :entrepot')
+			   ->setParameter('entrepot', $entrepot)
+		  ;
+
+		  return $qb
+			->getQuery()
+			->getResult()
+		  ;
+		}
+		
+		
+		public function findQuantitesByCpEntrepotIdLoadingPoSku($entrepot, $idLoadingPoSku)
+		{
+		  $query = $this->_em->createQuery('SELECT a FROM LoadingSplitBundle:Loadingposkudetailfnd a WHERE a.idloadingposku = :idloadingposku AND a.entrepot = :entrepot');
+		  $query->setParameter('idloadingposku', $idLoadingPoSku);
+		  $query->setParameter('entrepot', $entrepot);
+		  	  
+		  return $query->getOneOrNullResult();
+		}
+		
 }

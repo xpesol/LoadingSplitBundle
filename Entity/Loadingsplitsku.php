@@ -13,13 +13,13 @@ use Doctrine\ORM\Mapping as ORM;
 class Loadingsplitsku
 {
 	
-		/**
-	   * @ORM\OneToOne(targetEntity="LoadingSplitBundle\Entity\Loading")
-	   *@ORM\JoinColumn(name="idloading", referencedColumnName="idloading")
-	   */
-	  private $loading;
+    /**
+	* @ORM\OneToOne(targetEntity="LoadingSplitBundle\Entity\Loading")
+	*@ORM\JoinColumn(name="idloading", referencedColumnName="idloading")
+	*/
+	private $loading;
 
-	
+
     /**
      * @var int
      *
@@ -49,9 +49,9 @@ class Loadingsplitsku
      *
      * @return int
      */
-    public function getId()
+    public function getIdloadingposku()
     {
-        return $this->id;
+        return $this->idloadingposku;
     }
 
     /**
@@ -103,16 +103,14 @@ class Loadingsplitsku
     }
 	
 	public function setLoading(Loading $loading = null)
-	  {
+	{
 		$this->loading = $loading;
-	  }
+	}
 
-  public function getLoading()
-  {
-    return $this->loading;
-  }
+	public function getLoading()
+	{
+		return $this->loading;
+	}
 
-
-	
 }
 

@@ -21,8 +21,8 @@ class TableController extends Controller
 	public function selectAction($po)
     {
 		$em = $this->getDoctrine()->getManager();	
-		$repositorysku = $em->getRepository('LoadingSplitBundle:Loadingsplitsku');
-        $listLoading = $repositorysku->findBy(
+		$repositorySku = $em->getRepository('LoadingSplitBundle:Loadingsplitsku');
+        $listLoading = $repositorySku->findBy(
 		array('numpo' => $po))
 		;
 		
@@ -30,15 +30,38 @@ class TableController extends Controller
 			throw new NotFoundHttpException ( " Pas de repartition trouvée pour la commande ".$po);
 		}
 		
-		$listCpLodading = array();
+		$listCpLoading = array();
+		$listIdLoading = array();
+		
+        # Get Cp ref and id_loading_po_sku list	from cp_loading and cp_loading_po_sku detail
 		foreach ( $listLoading as $Loading) {
-			array_push($listCpLodading, $Loading->getLoading()->getRef());
+			array_push($listCpLoading, $Loading->getLoading()->getRef());
+			array_push($listIdLoading, $Loading->getIdloadingposku());
 		}	
 		
-		if (null === $listCpLodading) {
+		if (null === $listCpLoading) {
 			throw new NotFoundHttpException ( " Pas de repartition trouvée pour la commande ".$po);
 		}
-
-        return $this->render('LoadingSplitBundle:Table:select.html.twig', array ('listCp' =>$listCpLodading, 'po' => $po));	
+		
+		$repositorySkuDetailFnd = $em->getRepository('LoadingSplitBundle:Loadingposkudetailfnd');
+		$listEntrepotLoading = array();
+		$listQantiteByCpLoading = array();
+		# Get List entrepot form cp_loading_po_sku_detail
+		foreach ( $listIdLoading as $IdLoading) {
+        $listEntrepotByIdLoadingSku = $repositorySkuDetailFnd->findEntrepotByIdLoadingPoSku($IdLoading);
+		$listEntrepotLoading = array_merge($listEntrepotLoading, $listEntrepotByIdLoadingSku);
+		}
+		
+        $quantites = '';
+        return $this->render('LoadingSplitBundle:Table:select.html.twig', array ('listCp' =>$listCpLoading, 'po' => $po, 'listEntrepot' =>$listEntrepotLoading, 'quantites' => $quantites));	
+    }
+	
+	public function getAction($entrepot, $idloadingposku)
+    {
+		$em = $this->getDoctrine()->getManager();	
+		$repositorySkuDetailFnd = $em->getRepository('LoadingSplitBundle:Loadingposkudetailfnd');
+        $listEntrepotByIdLoadingSku = $repositorySkuDetailFnd->findQuantitesByCpEntrepotIdLoadingPoSku($entrepot, $idloadingposku);
+        $quantites = $listEntrepotByIdLoadingSku->getQuantites();
+        return $this->render('LoadingSplitBundle:Table:quantites.html.twig', array ('quantites' => $quantites));
     }
 }

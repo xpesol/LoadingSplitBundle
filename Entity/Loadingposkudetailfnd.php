@@ -3,6 +3,7 @@
 namespace LoadingSplitBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 /**
  * Loadingposkudetailfnd
@@ -13,13 +14,13 @@ use Doctrine\ORM\Mapping as ORM;
 class Loadingposkudetailfnd
 {
 	
-	
-	/**
-	*@ORM\OneToOne(targetEntity="LoadingSplitBundle\Entity\Loadingsplitsku")
+	    /**
+	* @ORM\OneToOne(targetEntity="LoadingSplitBundle\Entity\Loadingsplitsku")
 	*@ORM\JoinColumn(name="idloading_po_sku", referencedColumnName="idloading_po_sku")
 	*/
-	private $loadingsku;
+	private $loadingsplitsku;
 	
+
     /**
      * @var int
      *
@@ -31,7 +32,6 @@ class Loadingposkudetailfnd
 
     /**
      * @var int
-     *
      * @ORM\Column(name="idloading_po_sku", type="integer")
      */
     private $idloadingposku;
@@ -53,9 +53,9 @@ class Loadingposkudetailfnd
     /**
      * @var string
      *
-     * @ORM\Column(name="estimated_date_arrived", type="string", length=255, nullable=true)
+     * @ORM\Column(name="estimed_date_arrived", type="string", length=255, nullable=true)
      */
-    private $estimateddatearrived;
+    private $estimeddatearrived;
 
     /**
      * @var string
@@ -119,7 +119,7 @@ class Loadingposkudetailfnd
      * @return string
      */
     public function getEntrepot()
-    {
+    {	
         return $this->entrepot;
     }
 
@@ -148,27 +148,28 @@ class Loadingposkudetailfnd
     }
 
     /**
-     * Set estimateddatearrived
+     * Set estimeddatearrived
      *
-     * @param string $estimateddatearrived
+     * @param string $estimeddatearrived
      *
      * @return Loadingposkudetailfnd
      */
-    public function setEstimateddatearrived($estimateddatearrived)
+    public function setEstimeddatearrived($estimeddatearrived)
     {
-        $this->estimateddatearrived = $estimateddatearrived;
+        $this->estimeddatearrived = $estimeddatearrived;
 
         return $this;
     }
 
     /**
-     * Get estimateddatearrived
+     * Get estimeddatearrived
      *
      * @return string
      */
-    public function getEstimateddatearrived()
+    public function getEstimeddatearrived()
     {
-        return $this->estimateddatearrived;
+	$week = date("W", strtotime($this->estimeddatearrived));
+    return $week;
     }
 
     /**
@@ -194,5 +195,15 @@ class Loadingposkudetailfnd
     {
         return $this->souspays;
     }
+	
+	public function setLoadingsplitsku(Loadingsplitsku $loadingsplitsku  = null)
+	{
+		$this->loadingsplitsku  = $loadingsplitsku ;
+	}
+
+	public function getLoadingsplitsku ()
+	{
+		return $this->loadingsplitsku ;
+	}
 }
 

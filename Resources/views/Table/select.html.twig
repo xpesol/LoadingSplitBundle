@@ -3,13 +3,14 @@
 
 {% block body %}
     <link rel="stylesheet" href="{{ asset('css/LoadingSplit.css') }}" />
-    <h3>Repartition des chargements par CP de la commande {{ po }}</h3>
+    <h3>Repartition des chargements par CP de la commande {# {{ po }} #}</h3>
 	<table class="LoadingSplit">
 	                   					                        
 						<thead>
 							<tr>
-								<th>PO</th>
+								<th>Entrepot</th>
 								<th>IdLoading</th>
+								<th>Mad Hub</th>
 								{% for loadingsplitsku in listCp %}
                                 <th>{{loadingsplitsku}}</th>
 								{% endfor %}
@@ -17,10 +18,29 @@
 						</thead>
 						 
 						<tbody>
-	
-	                    <td></td>
-						<td></td>
-						<td></td>
+
+						{% for loadingentrepot in listEntrepot %}
+						<tr>
+                          <td>{{loadingentrepot.entrepot}}</td>
+						  <td>{{loadingentrepot.idloadingposku}}</td>
+						  <td>{{loadingentrepot.estimeddatearrived}}</td>
+						  {% for loadingsplitsku in listCp %}
+                                <td>
+								 
+								 {{ 
+								 render( 
+								        controller(  'LoadingSplitBundle:Table:get', 
+								                      {'entrepot' : loadingentrepot.entrepot, 
+													   'idloadingposku' : loadingentrepot.idloadingposku } 
+												  )
+										) 
+								 }} 
+								 {{ include('LoadingSplitBundle:Table:quantites.html.twig') }}
+                                </td>
+						  {% endfor %}
+						</tr>
+					    {% endfor %}
+
 						</tbody>
 	</table> 
 

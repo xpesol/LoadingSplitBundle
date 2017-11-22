@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class TableController extends Controller
 {
-    public function indexAction()
+    public function indexAction() # Test Function 
     {
 		  $repository = $this
 			->getDoctrine()
@@ -18,7 +18,7 @@ class TableController extends Controller
         return $this->render('LoadingSplitBundle:Table:index.html.twig', array ('listLoading' =>$listLoading));
     }
 	
-	public function selectAction($po)
+	public function selectAction($po) 
     {
 		$em = $this->getDoctrine()->getManager();	
 		$repositorySku = $em->getRepository('LoadingSplitBundle:Loadingsplitsku');
@@ -35,9 +35,10 @@ class TableController extends Controller
 		
         # Get Cp ref and id_loading_po_sku list	from cp_loading and cp_loading_po_sku detail
 		foreach ( $listLoading as $Loading) {
-			array_push($listCpLoading, $Loading->getLoading()->getRef());
-			array_push($listIdLoading, $Loading->getIdloadingposku());
+		array_push($listCpLoading, $Loading->getLoading()->getRef());
+		array_push($listIdLoading, $Loading->getIdloadingposku());
 		}	
+		
 		
 		if (null === $listCpLoading) {
 			throw new NotFoundHttpException ( " Pas de repartition trouvée pour la commande ".$po);
@@ -46,17 +47,23 @@ class TableController extends Controller
 		$repositorySkuDetailFnd = $em->getRepository('LoadingSplitBundle:Loadingposkudetailfnd');
 		$listEntrepotLoading = array();
 		$listQantiteByCpLoading = array();
+		$listIdLoadingAvailable = array();
+
 		# Get List entrepot form cp_loading_po_sku_detail
 		foreach ( $listIdLoading as $IdLoading) {
         $listEntrepotByIdLoadingSku = $repositorySkuDetailFnd->findEntrepotByIdLoadingPoSku($IdLoading);
+		
+		foreach ( $listEntrepotByIdLoadingSku as $EntrepotByIdLoadingSku) {
+		 array_push($listIdLoadingAvailable, $EntrepotByIdLoadingSku->getLoadingsplitsku()->getIdloading());
+		}
 		$listEntrepotLoading = array_merge($listEntrepotLoading, $listEntrepotByIdLoadingSku);
 		}
-		
+			
         $quantites = '';
-        return $this->render('LoadingSplitBundle:Table:select.html.twig', array ('listCp' =>$listCpLoading, 'po' => $po, 'listEntrepot' =>$listEntrepotLoading, 'quantites' => $quantites));	
+        return $this->render('LoadingSplitBundle:Table:select.html.twig', array ('listCp' =>$listCpLoading, 'listCpId' =>$listIdLoading,'po' => $po, 'listEntrepot' =>$listEntrepotLoading, 'quantites' => $quantites));	
     }
 	
-	public function getAction($entrepot, $idloadingposku)
+	public function getAction($entrepot, $idloadingposku) # Call in select.html.twig to get quantites by CP ref, Entrepot and ID cp_loading_po_sku
     {
 		$em = $this->getDoctrine()->getManager();	
 		$repositorySkuDetailFnd = $em->getRepository('LoadingSplitBundle:Loadingposkudetailfnd');
@@ -64,4 +71,5 @@ class TableController extends Controller
         $quantites = $listEntrepotByIdLoadingSku->getQuantites();
         return $this->render('LoadingSplitBundle:Table:quantites.html.twig', array ('quantites' => $quantites));
     }
+	
 }

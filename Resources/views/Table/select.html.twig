@@ -9,39 +9,55 @@
 						<thead>
 							<tr>
 								<th>Entrepot</th>
-								<th>IdLoading</th>
 								<th>Mad Hub</th>
+								<th>Quantitées commandées</th>
 								{% for loadingsplitsku in listCp %}
                                 <th>{{loadingsplitsku}}</th>
 								{% endfor %}
+								<th> Reste à affecter </th>
 							</tr>
 						</thead>
 						 
 						<tbody>
-
-						{% for loadingentrepot in listEntrepot %}
+                        {% set reste = 0 %}
+						{% for loadingentrepot in listEntrepot | sortByField('loadingentrepot.entrepot')%}
 						<tr>
                           <td>{{loadingentrepot.entrepot}}</td>
-						  <td>{{loadingentrepot.idloadingposku}}</td>
 						  <td>{{loadingentrepot.estimeddatearrived}}</td>
+						  <td>
+						  
+						    {{ 
+								 render( 
+								        controller(  'LoadingSplitBundle:Table:getQuantitiesOrdered', 
+								                      {'po' : po,
+													   'entrepot' : loadingentrepot.entrepot, 
+													   'mad' : loadingentrepot.estimeddatearrived } 
+												  )
+										) 
+							}} 
+						   
+						    {% include 'LoadingSplitBundle:Table:quantitesOrdered.html.twig' with {reste: reste}  %}
+						   							  
+						  </td>
 						  {% for cpId in listCpId %}
                                 <td>
 								 
 								 {% if cpId == loadingentrepot.idloadingposku %}
 								 {{ 
 								 render( 
-								        controller(  'LoadingSplitBundle:Table:get', 
+								        controller(  'LoadingSplitBundle:Table:getQuantitiesByLoad', 
 								                      {'entrepot' : loadingentrepot.entrepot, 
 													   'idloadingposku' : loadingentrepot.idloadingposku } 
 												  )
 										) 
 								 }} 
 							 
-								 {{ include('LoadingSplitBundle:Table:quantites.html.twig') }}
+								 {{ include('LoadingSplitBundle:Table:quantitesLoaded.html.twig') }}
 								                     								
 								{% endif %}
                                 </td>
 						  {% endfor %}
+						  <td> {{reste}} </td>
 						</tr>
 					    {% endfor %}
 

@@ -3,6 +3,7 @@
 namespace LoadingSplitBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class TableController extends Controller
 {
@@ -41,7 +42,7 @@ class TableController extends Controller
 		
 		
 		if (null === $listCpLoading) {
-			throw new NotFoundHttpException ( " Pas de repartition trouvée pour la commande ".$po);
+			throw new NotFoundHttpException ( 'Pas de repartition trouvée pour cette commande');
 		}
 		
 		$repositorySkuDetailFnd = $em->getRepository('LoadingSplitBundle:Loadingposkudetailfnd');
@@ -59,17 +60,37 @@ class TableController extends Controller
 		$listEntrepotLoading = array_merge($listEntrepotLoading, $listEntrepotByIdLoadingSku);
 		}
 			
-        $quantites = '';
-        return $this->render('LoadingSplitBundle:Table:select.html.twig', array ('listCp' =>$listCpLoading, 'listCpId' =>$listIdLoading,'po' => $po, 'listEntrepot' =>$listEntrepotLoading, 'quantites' => $quantites));	
+        $quantitesLoaded = '';
+		$quantitesOrdered = '';
+        return $this->render('LoadingSplitBundle:Table:select.html.twig', array ('listCp' =>$listCpLoading, 'listCpId' =>$listIdLoading,'po' => $po, 'listEntrepot' =>$listEntrepotLoading, 'quantitesLoaded' => $quantitesLoaded, 'quantitesOrdered' => $quantitesOrdered));	
     }
 	
-	public function getAction($entrepot, $idloadingposku) # Call in select.html.twig to get quantites by CP ref, Entrepot and ID cp_loading_po_sku
+	public function getQuantitiesByLoadAction($entrepot, $idloadingposku) # Call in select.html.twig to get quantites by CP ref, Entrepot and ID cp_loading_po_sku
     {
 		$em = $this->getDoctrine()->getManager();	
 		$repositorySkuDetailFnd = $em->getRepository('LoadingSplitBundle:Loadingposkudetailfnd');
         $listEntrepotByIdLoadingSku = $repositorySkuDetailFnd->findQuantitesByCpEntrepotIdLoadingPoSku($entrepot, $idloadingposku);
-        $quantites = $listEntrepotByIdLoadingSku->getQuantites();
-        return $this->render('LoadingSplitBundle:Table:quantites.html.twig', array ('quantites' => $quantites));
+		
+		if (null === $listEntrepotByIdLoadingSku) {
+			throw new NotFoundHttpException ( 'Pas de quantitées pour ce Cp trouvées');
+		}
+        $quantitesLoaded = $listEntrepotByIdLoadingSku->getQuantites();
+        return $this->render('LoadingSplitBundle:Table:quantitesLoaded.html.twig', array ('quantitesLoaded' => $quantitesLoaded));
     }
 	
+		public function getQuantitiesOrderedAction($po, $entrepot, $mad) # Call in select.html.twig to get quantites ordered by Entrepot, num_po and mad
+    {
+		$em = $this->getDoctrine()->getManager();	
+		$repositoryPoDetailFnd = $em->getRepository('LoadingSplitBundle:PoDetailFnd');
+        $listQuantitiesOrdered = $repositoryPoDetailFnd->findQuantitiesOrderedByPoEntrepotMad($po, $entrepot, $mad);
+		
+
+	    if (empty($listQuantitiesOrdered)){
+		$quantitesOrdered = '';}
+        else{		
+		$quantitesOrdered = $listQuantitiesOrdered->getQuantites();
+		}
+	
+        return $this->render('LoadingSplitBundle:Table:quantitesOrdered.html.twig', array ('quantitesOrdered' => $quantitesOrdered));
+    }
 }

@@ -16,7 +16,7 @@ class LoadingposkudetailfndRepository extends \Doctrine\ORM\EntityRepository
 
 		  $qb->where('a.idloadingposku = :idLoadingPoSku')
 			   ->setParameter('idLoadingPoSku', $idLoadingPoSku)
-			 ->orderBy('a.entrepot', 'DESC')
+			  # ->orderBy('a.entrepot', 'DESC')
 		  ;
 		  return $qb
 			->getQuery()

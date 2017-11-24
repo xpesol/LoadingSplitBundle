@@ -8,6 +8,9 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class TableController extends Controller
 {
 
+    private static $quantitiesRemaining = 0;
+	private static $orderedQuantities = 0;
+	
 	public function selectAction($po) 
     {
 		
@@ -54,8 +57,18 @@ class TableController extends Controller
 			}
 		else{
 			$quantitesLoaded = $listEntrepotByIdLoadingSku->getQuantites();
+			self::$quantitiesRemaining = self::$quantitiesRemaining + $quantitesLoaded;
 			}
-        return $this->render('LoadingSplitBundle:Table:quantitesLoaded.html.twig', array ('quantitesLoaded' => $quantitesLoaded));
+			
+        return $this->render('LoadingSplitBundle:Table:quantitesLoaded.html.twig', array ('quantitesLoaded' => $quantitesLoaded, 'entrepot' => $entrepot));
     }
 	
+	public function getQuantitiesRemainingsAction() # Call in select.html.twig to get quantites remaining
+    {
+		$quantitiesRemainingOutput = 0;
+		$quantitiesRemainingOutput = self::$quantitiesRemaining;
+		echo $quantitiesRemainingOutput;
+		self::$quantitiesRemaining = 0;
+        return $this->render('LoadingSplitBundle:Table:quantitesRemaining.html.twig', array ('remaining' => $quantitiesRemainingOutput));
+    }
 }

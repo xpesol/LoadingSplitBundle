@@ -14,7 +14,7 @@
 								{% for loadingsplitsku in listCp %}
                                 <th>{{loadingsplitsku}}</th>
 								{% endfor %}
-								<th> Reste à affecter </th>
+								<th> Quantité déjà affectée </th>
 							</tr>
 						</thead>
 						 
@@ -44,12 +44,20 @@
 										) 
 								 }} 
 							 
-								 {{ include('LoadingSplitBundle:Table:quantitesLoaded.html.twig') }}
+								 {% include 'LoadingSplitBundle:Table:quantitesLoaded.html.twig' %}
 								                     								
 
                                 </td>
 						  {% endfor %}
-						  <td> {{reste}} </td>
+						  <td> 
+						  		{{ 
+								 render( 
+								        controller('LoadingSplitBundle:Table:getQuantitiesRemainings')
+										) 
+								 }} 
+							 
+								 {% include 'LoadingSplitBundle:Table:quantitesRemaining.html.twig' %}
+						  </td>
 						</tr>
 
 					    {% endfor %}

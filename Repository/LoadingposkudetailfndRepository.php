@@ -33,4 +33,5 @@ class LoadingposkudetailfndRepository extends \Doctrine\ORM\EntityRepository
 		  
 		  return $query ->getOneOrNullResult();
 		}  
+		
 }

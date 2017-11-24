@@ -7,21 +7,22 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class TableController extends Controller
 {
-    public function indexAction() # Test Function 
-    {
-		  $repository = $this
-			->getDoctrine()
-			->getManager()
-			->getRepository('LoadingSplitBundle:Loadingsplitsku')
-		  ;
-          $listLoading = $repository->findAll();
-  
-        return $this->render('LoadingSplitBundle:Table:index.html.twig', array ('listLoading' =>$listLoading));
-    }
-	
+
 	public function selectAction($po) 
     {
-		$em = $this->getDoctrine()->getManager();	
+		
+		$em = $this->getDoctrine()->getManager();
+		
+		# Get List entrepot, quantity ordered and mad form po_detail_fnd
+		$listEntrepot= array();
+        $repositoryPoDetailFnd = $em->getRepository('LoadingSplitBundle:PoDetailFnd');	
+        $listEntrepot = $repositoryPoDetailFnd->findBy(array('numPo' => $po));	
+
+		if (null === $listEntrepot) {
+			throw new NotFoundHttpException ( " Pas de repartition trouvée pour la commande ".$po);
+		}
+		
+		# Get Cp ref and id_loading_po_sku list	from cp_loading and cp_loading_po_sku detail
 		$repositorySku = $em->getRepository('LoadingSplitBundle:Loadingsplitsku');
         $listLoading = $repositorySku->findBy(
 		array('numpo' => $po))
@@ -29,30 +30,18 @@ class TableController extends Controller
 		if (null === $listLoading) {
 			throw new NotFoundHttpException ( " Pas de repartition trouvée pour la commande ".$po);
 		}
-		$listCpLoading = array();
-		$listIdLoading = array();
-        # Get Cp ref and id_loading_po_sku list	from cp_loading and cp_loading_po_sku detail
+		$listCp = array();
+		$listCpId = array();
+       
 		foreach ( $listLoading as $Loading) {
-		array_push($listCpLoading, $Loading->getLoading()->getRef());
-		array_push($listIdLoading, $Loading->getIdloadingposku());
+		array_push($listCp, $Loading->getLoading()->getRef());
+		array_push($listCpId, $Loading->getIdloadingposku());
 		}	
-		if (null === $listCpLoading) {
-			throw new NotFoundHttpException ( 'Pas de repartition trouvée pour cette commande');
-		}
-		
-		$repositorySkuDetailFnd = $em->getRepository('LoadingSplitBundle:Loadingposkudetailfnd');
-		$listEntrepotLoading = array();
-		$listQantiteByCpLoading = array();
-
-		# Get List entrepot form cp_loading_po_sku_detail
-		foreach ( $listIdLoading as $IdLoading) {
-        $listEntrepotByIdLoadingSku = $repositorySkuDetailFnd->findEntrepotByIdLoadingPoSku($IdLoading);
-		$listEntrepotLoading = array_merge($listEntrepotLoading, $listEntrepotByIdLoadingSku);
-		}
+	
+        # Define quantitesLoaded use in quantitesLoaded.html.twig
         $quantitesLoaded = '';
-		$quantitesOrdered = '';
-		$dateMadRt = '';
-        return $this->render('LoadingSplitBundle:Table:select.html.twig', array ('listCp' =>$listCpLoading, 'listCpId' =>$listIdLoading,'po' => $po, 'listEntrepot' =>$listEntrepotLoading, 'quantitesLoaded' => $quantitesLoaded, 'quantitesOrdered' => $quantitesOrdered, 'dateMadRt' => $dateMadRt));	
+		
+        return $this->render('LoadingSplitBundle:Table:select.html.twig', array ('listCp' =>$listCp, 'listCpId' =>$listCpId,'po' => $po, 'listEntrepot' =>$listEntrepot, 'quantitesLoaded' => $quantitesLoaded));	
     }
 	
 	public function getQuantitiesByLoadAction($entrepot, $idloadingposku) # Call in select.html.twig to get quantites by CP ref, Entrepot and ID cp_loading_po_sku
@@ -69,30 +58,4 @@ class TableController extends Controller
         return $this->render('LoadingSplitBundle:Table:quantitesLoaded.html.twig', array ('quantitesLoaded' => $quantitesLoaded));
     }
 	
-	public function getQuantitiesOrderedAction($po, $entrepot, $mad) # Call in select.html.twig to get quantites ordered by Entrepot, num_po and mad
-    {
-		$em = $this->getDoctrine()->getManager();	
-		$repositoryPoDetailFnd = $em->getRepository('LoadingSplitBundle:PoDetailFnd');
-        $listQuantitiesOrdered = $repositoryPoDetailFnd->findQuantitiesOrderedByPoEntrepotMad($po, $entrepot);
-	    if (empty($listQuantitiesOrdered)){
-		$quantitesOrdered = '';}
-        else{		
-		$quantitesOrdered = $listQuantitiesOrdered->getQuantites();
-		}
-        return $this->render('LoadingSplitBundle:Table:quantitesOrdered.html.twig', array ('quantitesOrdered' => $quantitesOrdered));
-    }
-	
-	public function getDateMadRtAction($po, $entrepot) # Call in select.html.twig to get mad by Entrepot and num_po in po_detail_fnd
-    {
-		$em = $this->getDoctrine()->getManager();	
-		$repositoryPoDetailFnd = $em->getRepository('LoadingSplitBundle:PoDetailFnd');
-        $listDateMadRt = $repositoryPoDetailFnd->findQuantitiesOrderedByPoEntrepotMad($po, $entrepot);	
-	    if (empty($listDateMadRt)){
-			$dateMadRt = '';
-			}
-        else{
-			$dateMadRt = $listDateMadRt->getDateMadRt();
-			}
-        return $this->render('LoadingSplitBundle:Table:dateMadRt.html.twig', array ('dateMadRt' => $dateMadRt));
-    }
 }

@@ -10,7 +10,7 @@ namespace LoadingSplitBundle\Repository;
  */
 class LoadingposkudetailfndRepository extends \Doctrine\ORM\EntityRepository
 {
-	public function findEntrepotByIdLoadingPoSku($idLoadingPoSku)
+	public function oldfindEntrepotByIdLoadingPoSku($idLoadingPoSku)
 		{
 		  $qb = $this->createQueryBuilder('a');
 
@@ -23,7 +23,31 @@ class LoadingposkudetailfndRepository extends \Doctrine\ORM\EntityRepository
 			->getResult()
 		  ;
 		}
-			
+		
+	public function oldoldfindEntrepotByIdLoadingPoSku($idLoadingPoSku)
+		{
+		  $query = $this->_em->createQuery(
+		  'SELECT DISTINCT a.entrepot FROM LoadingSplitBundle:Loadingposkudetailfnd a WHERE a.idloadingposku = :idloadingposku ');
+		  $query->setParameter('idloadingposku', $idLoadingPoSku);
+		  return $query ->getResult();
+		}	
+	
+    public function findEntrepotByIdLoadingPoSku($idLoadingPoSku)
+		{
+		  $qb = $this->createQueryBuilder('a');
+
+		  $qb ->select('a.entrepot')
+		      ->distinct(true)
+		      ->where('a.idloadingposku = :idLoadingPoSku')	       
+			  ->setParameter('idLoadingPoSku', $idLoadingPoSku)
+			  # ->orderBy('a.entrepot', 'DESC')
+		  ;
+		  return $qb
+			->getQuery()
+			->getResult()
+		  ;
+	}
+	
 	public function findQuantitesByCpEntrepotIdLoadingPoSku($entrepot, $idLoadingPoSku)
 		{	   
 		  $query = $this->_em->createQuery(

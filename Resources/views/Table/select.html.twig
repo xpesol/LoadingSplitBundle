@@ -20,41 +20,17 @@
 						 
 						<tbody>
                         {% set reste = 0 %}
-						{% set newEntrepotArray = [] %}
-						{% for loadingentrepot in listEntrepot | sortByField('loadingentrepot.entrepot')%}
 						
-						{% if loadingentrepot.entrepot not in newEntrepotArray %}
-                        
-                        {% set newEntrepotArray = newEntrepotArray|merge([loadingentrepot.entrepot]) %}
+						{% for loadingentrepot in listEntrepot | sortByField('loadingentrepot.entrepot')%}
+												                   
 						<tr>
                           <td>{{loadingentrepot.entrepot}}</td>
 						  <td>
-						  	{{ 
-								 render( 
-								        controller(  'LoadingSplitBundle:Table:getDateMadRt', 
-								                      {'po' : po,
-													   'entrepot' : loadingentrepot.entrepot } 
-												  )
-										) 
-							}} 
-						     
-							 {{ include('LoadingSplitBundle:Table:dateMadRt.html.twig') }}
-						  
+						  	{{ loadingentrepot.dateMadRt}} 
+		  
 						  </td>
 						  <td>
-
-						    {{ 
-								 render( 
-								        controller(  'LoadingSplitBundle:Table:getQuantitiesOrdered', 
-								                      {'po' : po,
-													   'entrepot' : loadingentrepot.entrepot, 
-													   'mad' : loadingentrepot.estimeddatearrived } 
-												  )
-										) 
-							}} 
-						   
-						    {% include 'LoadingSplitBundle:Table:quantitesOrdered.html.twig' with {reste: reste}  %}
-						   							  
+						    {{ loadingentrepot.quantites}} 					   							  
 						  </td>
 						  {% for cpId in listCpId %}
                                 <td>		
@@ -75,7 +51,7 @@
 						  {% endfor %}
 						  <td> {{reste}} </td>
 						</tr>
-						{% endif %}
+
 					    {% endfor %}
 
 						</tbody>

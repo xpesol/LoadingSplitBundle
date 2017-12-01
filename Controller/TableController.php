@@ -20,7 +20,7 @@ class TableController extends Controller
 		$listEntrepot= array();
         $repositoryPoDetailFnd = $em->getRepository('LoadingSplitBundle:PoDetailFnd');	
         $listEntrepot = $repositoryPoDetailFnd->findBy(array('numPo' => $po));	
-        self::$orderedQuantities =  $listEntrepot ->getQuantites();
+        
 		if (null === $listEntrepot) {
 			throw new NotFoundHttpException ( " Pas de repartition trouvée pour la commande ".$po);
 		}
@@ -47,11 +47,14 @@ class TableController extends Controller
         return $this->render('LoadingSplitBundle:Table:select.html.twig', array ('listCp' =>$listCp, 'listCpId' =>$listCpId,'po' => $po, 'listEntrepot' =>$listEntrepot, 'quantitesLoaded' => $quantitesLoaded));	
     }
 	
-	public function getQuantitiesByLoadAction($entrepot, $idloadingposku) # Call in select.html.twig to get quantites by CP ref, Entrepot and ID cp_loading_po_sku
+	public function getQuantitiesByLoadAction($entrepot, $idloadingposku, $po) # Call in select.html.twig to get quantites by CP ref, Entrepot and ID cp_loading_po_sku
     {
 		$em = $this->getDoctrine()->getManager();	
 		$repositorySkuDetailFnd = $em->getRepository('LoadingSplitBundle:Loadingposkudetailfnd');
         $listEntrepotByIdLoadingSku = $repositorySkuDetailFnd->findQuantitesByCpEntrepotIdLoadingPoSku($entrepot, $idloadingposku);
+		
+		$repositoryPoDetailFnd = $em->getRepository('LoadingSplitBundle:PoDetailFnd');	
+		self::$orderedQuantities = self::$orderedQuantities + $repositoryPoDetailFnd -> findQuantitiesOrderedByPoEntrepotMad($entrepot, $po);
 		if (empty($listEntrepotByIdLoadingSku)) {
 			$quantitesLoaded = '';
 			}
@@ -66,9 +69,10 @@ class TableController extends Controller
 	public function getQuantitiesRemainingsAction() # Call in select.html.twig to get quantites remaining
     {
 		$quantitiesRemainingOutput = 0;
-		$quantitiesRemainingOutput = self::$quantitiesRemaining;
+		$quantitiesRemainingOutput =  self::$quantitiesRemaining.'('.self::$orderedQuantities.')';
 		echo $quantitiesRemainingOutput;
 		self::$quantitiesRemaining = 0;
+	
         return $this->render('LoadingSplitBundle:Table:quantitesRemaining.html.twig', array ('quantitiesRemainingOutput' => $quantitiesRemainingOutput));
     }
 }

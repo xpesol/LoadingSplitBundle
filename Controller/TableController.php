@@ -20,7 +20,7 @@ class TableController extends Controller
 		$listEntrepot= array();
         $repositoryPoDetailFnd = $em->getRepository('LoadingSplitBundle:PoDetailFnd');	
         $listEntrepot = $repositoryPoDetailFnd->findBy(array('numPo' => $po));	
-
+        self::$orderedQuantities =  $listEntrepot ->getQuantites();
 		if (null === $listEntrepot) {
 			throw new NotFoundHttpException ( " Pas de repartition trouvée pour la commande ".$po);
 		}
@@ -69,6 +69,6 @@ class TableController extends Controller
 		$quantitiesRemainingOutput = self::$quantitiesRemaining;
 		echo $quantitiesRemainingOutput;
 		self::$quantitiesRemaining = 0;
-        return $this->render('LoadingSplitBundle:Table:quantitesRemaining.html.twig', array ('remaining' => $quantitiesRemainingOutput));
+        return $this->render('LoadingSplitBundle:Table:quantitesRemaining.html.twig', array ('quantitiesRemainingOutput' => $quantitiesRemainingOutput));
     }
 }

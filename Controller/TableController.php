@@ -11,6 +11,7 @@ class TableController extends Controller
     private static $quantitiesRemaining = 0;
 	private static $orderedQuantities = 0;
 	
+	
 	public function selectAction($po) 
     {
 		
@@ -54,7 +55,13 @@ class TableController extends Controller
         $listEntrepotByIdLoadingSku = $repositorySkuDetailFnd->findQuantitesByCpEntrepotIdLoadingPoSku($entrepot, $idloadingposku);
 		
 		$repositoryPoDetailFnd = $em->getRepository('LoadingSplitBundle:PoDetailFnd');	
-		self::$orderedQuantities = self::$orderedQuantities + $repositoryPoDetailFnd -> findQuantitiesOrderedByPoEntrepotMad($entrepot, $po);
+		
+		# Get Quantities Ordered By Po Entrepot Mad from table po_detal_fnd
+		$listQuantitiesOrderedByPoEntrepotMad = $repositoryPoDetailFnd -> findQuantitiesOrderedByPoEntrepotMad($po, $entrepot);
+		$quantitiesOrderedByPoEntrepot = $listQuantitiesOrderedByPoEntrepotMad->getQuantites();
+		self::$orderedQuantities = $quantitiesOrderedByPoEntrepot;
+		
+
 		if (empty($listEntrepotByIdLoadingSku)) {
 			$quantitesLoaded = '';
 			}
@@ -69,7 +76,7 @@ class TableController extends Controller
 	public function getQuantitiesRemainingsAction() # Call in select.html.twig to get quantites remaining
     {
 		$quantitiesRemainingOutput = 0;
-		$quantitiesRemainingOutput =  self::$quantitiesRemaining.'('.self::$orderedQuantities.')';
+		$quantitiesRemainingOutput =  self::$orderedQuantities - self::$quantitiesRemaining;
 		echo $quantitiesRemainingOutput;
 		self::$quantitiesRemaining = 0;
 	
